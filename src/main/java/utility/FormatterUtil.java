@@ -7,33 +7,26 @@ import java.math.RoundingMode;
 public class FormatterUtil {
 
   public static String formatForDisplay(BigDecimal v, int maxDigits) {
-    String string = v.toString();
+    String stringValue = v.toString();
     // 整数と少数を個別に管理し、処理を通した後連結させる
     StringBuilder integers = new StringBuilder();
     StringBuilder decimals = new StringBuilder();
     boolean isInteger = true;
-    int integerCount = 0;
 
-    int digitCount = 0;
-    for (int i = 0; i < string.length(); i++) {
-      if (Character.isDigit(string.charAt(i))) {
-        digitCount++;
-        // 整数なら整数桁数のカウントも追加
+    for (int i = 0; i < stringValue.length(); i++) {
+      if (Character.isDigit(stringValue.charAt(i))) {
+
+        // 整数、少数を分離してカウント
         if (isInteger) {
-          integers.append(string.charAt(i));
+          integers.append(stringValue.charAt(i));
         } else if (!isInteger) {
-          decimals.append(string.charAt(i));
+          decimals.append(stringValue.charAt(i));
         }
       }
-
       // 小数点に達したら整数桁数のカウントは止める
-      if (string.charAt(i) == '.') {
+      if (stringValue.charAt(i) == '.') {
         isInteger = false;
       }
-    }
-    // 8桁以内ならそのまま返す
-    if (digitCount <= maxDigits) {
-      return string;
     }
 
     // 少数部分の余剰な0を排除
