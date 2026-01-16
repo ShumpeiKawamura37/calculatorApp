@@ -67,7 +67,7 @@ public class CalculatorModel {
     if(state != InputState.INPUT_NUMBER
       || digitCount == 0
       || currentInput.charAt(currentInput.length()-1) == '.'
-      || digitCount >= 8
+      || digitCount >= maxDigits
     ) {
       return false;
     }
@@ -148,7 +148,6 @@ public class CalculatorModel {
         leftOperand = leftOperand.add(rightOperand);
         break;
       case SUB:
-
         leftOperand = leftOperand.subtract(rightOperand);
         break;
       case MUL:
