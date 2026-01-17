@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import entity.InputState;
 import entity.Operator;
-import model.CalculatorModel;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -237,8 +236,8 @@ class CalculatorModelTest {
     assertEquals(InputState.INPUT_NUMBER, model.getState());
   }
 
-  @Test
-  @DisplayName("")
+  // @Test
+  // @DisplayName("")
 }
 
 

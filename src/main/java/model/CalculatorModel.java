@@ -2,6 +2,7 @@ package model;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+
 import entity.InputState;
 import entity.Operator;
 import utility.FormatterUtil;
@@ -22,14 +23,6 @@ public class CalculatorModel {
 
   // 桁制限（数字数8）、先頭 0 の扱い（置換/許容）
   public boolean appendDigit(char ch) {
-    // マイナスが負号でなく演算子と確定
-    if(state == InputState.INPUT_OPERATOR 
-      && currentInput.length() != 0) {
-        if(currentInput.charAt(currentInput.length() -1) == '-') {
-          currentInput.deleteCharAt(currentInput.length() -1);
-          pendingOp = Operator.SUB;
-        }
-    }
     // 先頭0置換
     if (currentInput.length() == 1
       && currentInput.charAt(0) == '0') {
@@ -88,35 +81,47 @@ public class CalculatorModel {
         }
         return;
       case INPUT_NUMBER:
-        // すでに左辺があれば計算　なければcurrentInputを左辺へ移動
+        // 別の演算子が押された時、負号は削除する
+          if(currentInput.length() == 1) {
+            if(currentInput.charAt(0) == '-') {
+              currentInput.deleteCharAt(0);
+            }
+          }
+
+        // １文字削除後の負号を受け付ける
+          if(op == Operator.SUB
+            && currentInput.length() == 0) {
+              currentInput.append('-');
+              return;
+          }
+
+        // currentInputを確定させ左辺へ移動　すでに左辺があれば計算
         if(leftOperand.compareTo(BigDecimal.ZERO) == 0) {
           leftOperand = new BigDecimal(currentInput.toString());
         } else {
           apply();
         }
         currentInput.setLength(0);
+        state = InputState.INPUT_OPERATOR;
+        pendingOp = op;
         break;
       case INPUT_OPERATOR:
-        currentInput = new StringBuilder();
-        // SUB押下時、演算子でなく負号として追加
+        // MUL・DIVの次のマイナスは負号とする。（1回目のみ）
         if(op == Operator.SUB
-          && pendingOp != Operator.ADD
-        ){
-          if(currentInput.length() == 0) {
-            currentInput.append("-");
-            return;
-          }
-        }
-        // SUBが上書きされたら負号を削除
-        if(op != Operator.SUB
-          && currentInput.length() > 0
+          && (pendingOp == Operator.MUL || pendingOp == Operator.DIV)
         ) {
-          if(currentInput.charAt(currentInput.length() -1) == '-') {
-            currentInput.deleteCharAt(currentInput.length() -1);
+          if(currentInput.length() == 0) {
+            currentInput.append('-');
+            state = InputState.INPUT_NUMBER;
           }
+          return;
         }
+
+        pendingOp = op;
         break;
       case ERROR:
+        return;
+      default:
         return;
     }
 
@@ -154,12 +159,12 @@ public class CalculatorModel {
         leftOperand = leftOperand.multiply(rightOperand);
         break;
       case DIV:
-        if (rightOperand.compareTo(BigDecimal.ZERO) == 0) {
+        try {
+          leftOperand = leftOperand.divide(rightOperand);
+        } catch(ArithmeticException e) {
           state = InputState.ERROR;
           return;
         }
-        // 割り切れない場合10桁まで計算して四捨五入
-        leftOperand = leftOperand.divide(rightOperand, 10, RoundingMode.HALF_UP);
         break;
     }
     pendingOp = null;
@@ -207,14 +212,16 @@ public class CalculatorModel {
   
   // １文字削除
   public void deleteLastIndex() {
-    if(currentInput.length() == 0) {
-      return;
-    }
-    currentInput.deleteCharAt(currentInput.length() -1);
-
-    if(currentInput.length() == 0
-      && pendingOp == null) {
-        currentInput = new StringBuilder("0");
+    switch (state) {
+      case INPUT_NUMBER:
+        currentInput.deleteCharAt(currentInput.length() -1);
+        左辺がないときは0を表示させ、stateはREADYにする。
+        break;
+      case INPUT_OPERATOR:
+        pendingOp = null;
+        break;
+      default:
+        break;
     }
   }
 
@@ -223,10 +230,20 @@ public class CalculatorModel {
     if(currentInput.length() == 0) {
       return;
     }
+
+    // 演算子と矛盾する際は演算子を負号に合わせる
     if(currentInput.charAt(0) == '-') {
-      currentInput.deleteCharAt(0);
+      if(pendingOp == Operator.ADD) {
+        pendingOp = Operator.SUB;
+      } else {
+        currentInput.deleteCharAt(0);
+      }
     } else {
-      currentInput.insert(0, '-');
+      if(pendingOp == Operator.SUB) {
+        pendingOp = Operator.ADD;
+      } else {
+        currentInput.insert(0, '-');
+      }
     }
   }
 
