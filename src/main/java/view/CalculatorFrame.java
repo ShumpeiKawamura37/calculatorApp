@@ -17,14 +17,14 @@ public class CalculatorFrame extends JFrame {
 
   public CalculatorFrame() {
 
-    // 上段
-    displayLabel = new JLabel("", SwingConstants.RIGHT);
+    // ディスプレイ
+    displayLabel = new JLabel("0", SwingConstants.RIGHT);
     displayLabel.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
     displayLabel.setPreferredSize(new Dimension(0, 50));
     displayLabel.setFont(new Font("", Font.BOLD, 20));
     displayLabel.setOpaque(true);
     displayLabel.setBackground(Color.WHITE);
-    // 下段  
+    // キーパッド 
     keypadPanel = new JPanel(new GridLayout(5, 4, 6, 6));
     keypadPanel.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
     keypadPanel.setBackground(Color.WHITE);
@@ -131,7 +131,6 @@ public class CalculatorFrame extends JFrame {
   }
 
   public void bindController(CalculatorController controller) {
-    controller.onOperator(Operator.DIV);
     buttons.forEach(button -> {
       button.addActionListener(e -> {
         String value = button.getText();
