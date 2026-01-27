@@ -1,6 +1,8 @@
 package model;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 import entity.InputState;
 import entity.Operator;
@@ -40,6 +42,12 @@ public class CalculatorModel {
       return false;
     }
 
+    // 指数eの後に数字を入力した場合、自動で+を追加する。
+    if(currentInput.length() != 0
+      && currentInput.charAt(currentInput.length() -1) == 'e') {
+      currentInput.append('+');
+    }
+
     state = InputState.INPUT_NUMBER;
     currentInput.append(ch);
     return true;
@@ -54,12 +62,14 @@ public class CalculatorModel {
         digitCount++;
       }
     }
-    // 1桁目/8桁超過時/既に'.'がある場合を全て弾く
+    // 1桁目/8桁超過時/既に'.'がある場合、currentInputが指数表記の場合での入力全て弾く
     if (state == InputState.INPUT_OPERATOR
         || state == InputState.ERROR
         || digitCount == 0
         || currentInput.toString().contains(".") == true
-        || digitCount >= maxDigits) {
+        || digitCount >= maxDigits
+        || currentInput.charAt(currentInput.length() -1) == 'e'
+      ) {
       return false;
     }
 
@@ -89,6 +99,27 @@ public class CalculatorModel {
         }
 
       case INPUT_NUMBER:
+        // 指数表記のeに続く符号を受け付ける。eの後に他の演算子の入力は受け付けない。
+        if(currentInput.length() != 0
+          && currentInput.charAt(currentInput.length() -1) == 'e') {
+          if(op == Operator.ADD) {
+            currentInput.append('+');
+          } else if( op == Operator.SUB) {
+            currentInput.append('-');
+          }
+          return;
+        }
+
+        // 指数表記の符号を上書きさせる。
+        if(currentInput.length() >= 2
+          && currentInput.charAt(currentInput.length() -2) == 'e') {
+          if(op == Operator.ADD) {
+            currentInput.setCharAt(currentInput.length() -1, '+');
+          } else if( op == Operator.SUB) {
+            currentInput.setCharAt(currentInput.length() -1, '-');
+          }
+          return;
+        }
 
         // ディスプレイに負号しかない状態では、演算子を受け付けない
         if (pendingOp == null &&
@@ -155,7 +186,8 @@ public class CalculatorModel {
     }
     apply();
     // イコールで計算した場合、計算結果はcurrentInputに移動させ編集可能とする
-    currentInput = new StringBuilder(leftOperand.toString());
+    String formatted = FormatterUtil.formatForDisplay(leftOperand, maxDigits);
+    currentInput = new StringBuilder(formatted);
     leftOperand = BigDecimal.ZERO;
   }
 
@@ -182,7 +214,8 @@ public class CalculatorModel {
         break;
       case DIV:
         try {
-          leftOperand = leftOperand.divide(rightOperand);
+          // 割り切れない数字は8桁にまとめる
+          leftOperand = leftOperand.divide(rightOperand, new MathContext(maxDigits , RoundingMode.DOWN));
         } catch (ArithmeticException e) {
           state = InputState.ERROR;
           return;
@@ -224,12 +257,10 @@ public class CalculatorModel {
 
     // 演算子がないとき、leftOperandは出力しない
     if (pendingOp == null) {
-      System.out.println(currentInput + ":" + state);
       return currentInput.toString();
     }
 
     String formattedString = FormatterUtil.formatForDisplay(leftOperand, maxDigits);
-    System.out.println("formattedString:" + formattedString + " " + "op:" + op + " " + "currentInput:" + currentInput + " " + "state:" + state);
     return formattedString + op + currentInput;
   }
 
@@ -254,7 +285,8 @@ public class CalculatorModel {
         pendingOp = null;
         state = InputState.INPUT_NUMBER;
         // 左辺をcurrentInputに移動
-        currentInput = new StringBuilder(leftOperand.toString());
+        String formatted = FormatterUtil.formatForDisplay(leftOperand, maxDigits);
+        currentInput = new StringBuilder(formatted);
         leftOperand = BigDecimal.ZERO;
         break;
       default:
