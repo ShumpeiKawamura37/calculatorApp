@@ -99,7 +99,7 @@ public class CalculatorModel {
         }
 
       case INPUT_NUMBER:
-        // 指数表記のeに続く符号を受け付ける。eの後に他の演算子の入力は受け付けない。
+        // 指数表記のeに続く符号を受け付ける。eの後に乗除算演算子の入力は受け付けない。
         if(currentInput.length() != 0
           && currentInput.charAt(currentInput.length() -1) == 'e') {
           if(op == Operator.ADD) {
@@ -295,7 +295,7 @@ public class CalculatorModel {
   }
 
   // 負号反転 未入力や0は弾く
-  public void switchNegativeSign() {
+  public void toggleSign() {
     if (currentInput.length() == 0
         || currentInput.toString().equals("0")) {
       return;

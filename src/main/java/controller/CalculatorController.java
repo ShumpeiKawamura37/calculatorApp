@@ -45,7 +45,7 @@ public class CalculatorController {
   }
 
   public void onReverse() {
-    model.switchNegativeSign();
+    model.toggleSign();
     frame.setDisplay(model.getDisplayText());
   }
 }
