@@ -116,6 +116,7 @@ class CalculatorModelTest {
   @DisplayName("負号開始の次に演算子を入力しても状態は変わらない")
   void negativeStartToOp() {
     model.inputOperator(Operator.SUB);
+    model.inputOperator(Operator.MUL);
 
     assertEquals(InputState.INPUT_NUMBER, model.getState());
   }
@@ -197,6 +198,7 @@ class CalculatorModelTest {
   @Test
   @DisplayName("演算子の次に数字を入力した場合、数字入力モードになる")
   void opToNum() {
+    model.inputOperator(Operator.ADD);
     model.appendDigit('1');
 
     assertEquals(InputState.INPUT_NUMBER, model.getState());
