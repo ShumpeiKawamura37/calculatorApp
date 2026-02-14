@@ -23,7 +23,7 @@ public class CalculatorModel {
   }
 
   // 桁制限（数字数8）、先頭 0 の扱い（置換/許容）
-  public boolean appendDigit(char ch) {
+  public boolean appendDigit(char inputedChar) {
     // 先頭0置換
     if (currentInput.length() == 1
         && currentInput.charAt(0) == '0') {
@@ -49,7 +49,7 @@ public class CalculatorModel {
     }
 
     state = InputState.INPUT_NUMBER;
-    currentInput.append(ch);
+    currentInput.append(inputedChar);
     return true;
   }
 
@@ -79,12 +79,12 @@ public class CalculatorModel {
   }
 
   // 負号開始、演算子上書き、左から順に apply()
-  public void inputOperator(Operator op) {
+  public void inputOperator(Operator operator) {
 
     switch (state) {
       case READY:
         // マイナスは負号として受け付ける
-        if (op == Operator.SUB) {
+        if (operator == Operator.SUB) {
           // 先頭0置換
           if (currentInput.length() == 1
               && currentInput.charAt(0) == '0') {
@@ -102,9 +102,9 @@ public class CalculatorModel {
         // 指数表記のeに続く符号を受け付ける。eの後に乗除算演算子の入力は受け付けない。
         if(currentInput.length() != 0
           && currentInput.charAt(currentInput.length() -1) == 'e') {
-          if(op == Operator.ADD) {
+          if(operator == Operator.ADD) {
             currentInput.append('+');
-          } else if( op == Operator.SUB) {
+          } else if( operator == Operator.SUB) {
             currentInput.append('-');
           }
           return;
@@ -113,9 +113,9 @@ public class CalculatorModel {
         // 指数表記の符号を上書きさせる。
         if(currentInput.length() >= 2
           && currentInput.charAt(currentInput.length() -2) == 'e') {
-          if(op == Operator.ADD) {
+          if(operator == Operator.ADD) {
             currentInput.setCharAt(currentInput.length() -1, '+');
-          } else if( op == Operator.SUB) {
+          } else if( operator == Operator.SUB) {
             currentInput.setCharAt(currentInput.length() -1, '-');
           }
           return;
@@ -137,7 +137,7 @@ public class CalculatorModel {
           }
           currentInput.deleteCharAt(0);
           state = InputState.INPUT_OPERATOR;
-          pendingOp = op;
+          pendingOp = operator;
           return;
         }
 
@@ -152,7 +152,7 @@ public class CalculatorModel {
 
         currentInput.setLength(0);
         state = InputState.INPUT_OPERATOR;
-        pendingOp = op;
+        pendingOp = operator;
         break;
       case INPUT_OPERATOR:
         // MUL・DIVの次のマイナスは負号とする。（currentInputが空の時のみ）
@@ -165,7 +165,7 @@ public class CalculatorModel {
           return;
         }
 
-        pendingOp = op;
+        pendingOp = operator;
         break;
       case ERROR:
         return;
@@ -175,7 +175,7 @@ public class CalculatorModel {
 
     state = InputState.INPUT_OPERATOR;
     currentInput = new StringBuilder();
-    pendingOp = op;
+    pendingOp = operator;
   }
 
   // 不計算条件（演算子未指定/演算子直後）
