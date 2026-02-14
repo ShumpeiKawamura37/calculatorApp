@@ -4,8 +4,8 @@ import model.CalculatorModel;
 import view.CalculatorFrame;
 
 public class CalculatorController {
-  CalculatorFrame frame;
-  CalculatorModel model;
+  private final CalculatorFrame frame;
+  private final CalculatorModel model;
 
   public CalculatorController(CalculatorFrame frame, CalculatorModel model) {
     this.frame = frame;
