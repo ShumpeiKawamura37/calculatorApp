@@ -12,8 +12,8 @@ public class CalculatorController {
     this.model = model;
   }
 
-  public void onDigit(char ch) {
-    if(model.appendDigit(ch)) {
+  public void onDigit(char inputedChar) {
+    if(model.appendDigit(inputedChar)) {
       frame.setDisplay(model.getDisplayText());
     }
   }
@@ -24,8 +24,8 @@ public class CalculatorController {
     }
   }
 
-  public void onOperator(Operator op) {
-    model.inputOperator(op);
+  public void onOperator(Operator operator) {
+    model.inputOperator(operator);
     frame.setDisplay(model.getDisplayText());
   }
 
