@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="model.CalculatorModelTest" time="0.042" tests="33" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="model.CalculatorModelTest" time="0.036" tests="33" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="JP"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/owner/Documents/java課題/calculatorApp/target/surefire/surefirebooter-20260130200045591_3.jar /Users/owner/Documents/java課題/calculatorApp/target/surefire 2026-01-30T20-00-45_542-jvmRun1 surefire-20260130200045591_1tmp surefire_0-20260130200045591_2tmp"/>
+    <property name="sun.java.command" value="/Users/owner/Documents/java課題/calculatorApp/target/surefire/surefirebooter-20260216135546699_3.jar /Users/owner/Documents/java課題/calculatorApp/target/surefire 2026-02-16T13-55-46_650-jvmRun1 surefire-20260216135546699_1tmp surefire_0-20260216135546699_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/owner/Documents/java課題/calculatorApp/target/test-classes:/Users/owner/Documents/java課題/calculatorApp/target/classes:/Users/owner/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.2/junit-jupiter-5.10.2.jar:/Users/owner/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.2/junit-jupiter-api-5.10.2.jar:/Users/owner/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/owner/.m2/repository/org/junit/platform/junit-platform-commons/1.10.2/junit-platform-commons-1.10.2.jar:/Users/owner/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/owner/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.2/junit-jupiter-params-5.10.2.jar:/Users/owner/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.2/junit-jupiter-engine-5.10.2.jar:/Users/owner/.m2/repository/org/junit/platform/junit-platform-engine/1.10.2/junit-platform-engine-1.10.2.jar:"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/owner/Documents/java課題/calculatorApp/target/surefire/surefirebooter-20260130200045591_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/owner/Documents/java課題/calculatorApp/target/surefire/surefirebooter-20260216135546699_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="21.0.7+6-LTS"/>
@@ -61,29 +61,32 @@
   <testcase name="stateIsReady" classname="model.CalculatorModelTest" time="0.009"/>
   <testcase name="opMulToNegative" classname="model.CalculatorModelTest" time="0.001"/>
   <testcase name="numToOp" classname="model.CalculatorModelTest" time="0.001"/>
-  <testcase name="resultEqualsOverEightDigits" classname="model.CalculatorModelTest" time="0.005"/>
-  <testcase name="OpToEr" classname="model.CalculatorModelTest" time="0.0"/>
-  <testcase name="readyToNegative" classname="model.CalculatorModelTest" time="0.001"/>
-  <testcase name="opDivToNegative" classname="model.CalculatorModelTest" time="0.0"/>
+  <testcase name="resultEqualsOverEightDigits" classname="model.CalculatorModelTest" time="0.003"/>
+  <testcase name="OpToEr" classname="model.CalculatorModelTest" time="0.001"/>
+  <testcase name="readyToNegative" classname="model.CalculatorModelTest" time="0.0"/>
+  <testcase name="opDivToNegative" classname="model.CalculatorModelTest" time="0.001"/>
   <testcase name="negativeStartToOp" classname="model.CalculatorModelTest" time="0.0"/>
-  <testcase name="erToNum" classname="model.CalculatorModelTest" time="0.001"/>
+  <testcase name="erToNum" classname="model.CalculatorModelTest" time="0.0"/>
   <testcase name="readyToDelete" classname="model.CalculatorModelTest" time="0.0"/>
-  <testcase name="resultIndivisible" classname="model.CalculatorModelTest" time="0.001"/>
-  <testcase name="erToOp" classname="model.CalculatorModelTest" time="0.0"/>
+  <testcase name="resultIndivisible" classname="model.CalculatorModelTest" time="0.0"/>
+  <testcase name="erToOp" classname="model.CalculatorModelTest" time="0.001"/>
   <testcase name="opToNum" classname="model.CalculatorModelTest" time="0.0"/>
-  <testcase name="readyToOp" classname="model.CalculatorModelTest" time="0.0"/>
-  <testcase name="readyToToggle" classname="model.CalculatorModelTest" time="0.001"/>
+  <testcase name="readyToOp" classname="model.CalculatorModelTest" time="0.001"/>
+  <testcase name="readyToToggle" classname="model.CalculatorModelTest" time="0.0"/>
   <testcase name="sample" classname="model.CalculatorModelTest" time="0.001"/>
   <testcase name="numToDeleteBecomeReady" classname="model.CalculatorModelTest" time="0.0"/>
-  <testcase name="opToEqual" classname="model.CalculatorModelTest" time="0.0"/>
-  <testcase name="readyToEqual" classname="model.CalculatorModelTest" time="0.001"/>
+  <testcase name="opToEqual" classname="model.CalculatorModelTest" time="0.001"/>
+  <testcase name="readyToEqual" classname="model.CalculatorModelTest" time="0.0"/>
   <testcase name="erToC" classname="model.CalculatorModelTest" time="0.0"/>
-  <testcase name="opToC" classname="model.CalculatorModelTest" time="0.001"/>
+  <testcase name="opToC" classname="model.CalculatorModelTest" time="0.0"/>
   <testcase name="numToClear" classname="model.CalculatorModelTest" time="0.0"/>
-  <testcase name="negativeToOp" classname="model.CalculatorModelTest" time="0.001"/>
+  <testcase name="negativeToOp" classname="model.CalculatorModelTest" time="0.0"/>
   <testcase name="toggleSignBecomeInputOperator" classname="model.CalculatorModelTest" time="0.0"/>
-  <testcase name="readyToDot" classname="model.CalculatorModelTest" time="0.001"/>
-  <testcase name="readyToNum" classname="model.CalculatorModelTest" time="0.0"/>
+  <testcase name="readyToDot" classname="model.CalculatorModelTest" time="0.0">
+    <system-out><![CDATA[、初期状態の数字は0
+]]></system-out>
+  </testcase>
+  <testcase name="readyToNum" classname="model.CalculatorModelTest" time="0.001"/>
   <testcase name="numToEqualNotCalculate" classname="model.CalculatorModelTest" time="0.0"/>
   <testcase name="opToDelete" classname="model.CalculatorModelTest" time="0.0"/>
   <testcase name="inputtedOverEigthdigitsWithDot" classname="model.CalculatorModelTest" time="0.0"/>
