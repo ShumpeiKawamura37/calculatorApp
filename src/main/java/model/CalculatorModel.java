@@ -96,7 +96,7 @@ public class CalculatorModel {
         if (operator == Operator.SUB) {
           // 先頭0置換
           if (currentInput.length() == 1
-              && currentInput.charAt(0) == '0') {
+              && currentInput.charAt(0) == zeroForDisplay) {
             currentInput.deleteCharAt(0);
           }
 
