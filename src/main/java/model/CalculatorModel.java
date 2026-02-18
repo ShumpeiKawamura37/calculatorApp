@@ -7,26 +7,34 @@ import java.math.RoundingMode;
 import entity.InputState;
 import entity.Operator;
 import utility.FormatterUtil;
-
 public class CalculatorModel {
   BigDecimal leftOperand;
   StringBuilder currentInput;
   Operator pendingOp;
-  InputState state = InputState.READY;
-  int maxDigits = 8;
+  InputState state;
+
+
+  // 固定値の宣言
+  private static final int maxDigits = 8;
+  private static final char zeroForDisplay = '0';
+  private static final char exponent = 'e';
+  private static final char addSign = '+';
+  private static final char subSign = '-';
+  private static final char mulSign = '×';
+  private static final char divSign = '÷';
 
   public CalculatorModel() {
     leftOperand = BigDecimal.ZERO;
-    currentInput = new StringBuilder("0");
+    currentInput = new StringBuilder(String.valueOf(zeroForDisplay));
     pendingOp = null;
     state = InputState.READY;
   }
 
   // 桁制限（数字数8）、先頭 0 の扱い（置換/許容）
-  public boolean appendDigit(char ch) {
+  public boolean appendDigit(char inputedChar) {
     // 先頭0置換
     if (currentInput.length() == 1
-        && currentInput.charAt(0) == '0') {
+        && currentInput.charAt(0) == zeroForDisplay) {
       currentInput.deleteCharAt(0);
     }
     // 数字の桁数をカウント
@@ -44,12 +52,12 @@ public class CalculatorModel {
 
     // 指数eの後に数字を入力した場合、自動で+を追加する。
     if(currentInput.length() != 0
-      && currentInput.charAt(currentInput.length() -1) == 'e') {
+      && currentInput.charAt(currentInput.length() -1) == exponent) {
       currentInput.append('+');
     }
 
     state = InputState.INPUT_NUMBER;
-    currentInput.append(ch);
+    currentInput.append(inputedChar);
     return true;
   }
 
@@ -68,7 +76,7 @@ public class CalculatorModel {
         || digitCount == 0
         || currentInput.toString().contains(".") == true
         || digitCount >= maxDigits
-        || currentInput.charAt(currentInput.length() -1) == 'e'
+        || currentInput.charAt(currentInput.length() -1) == exponent
       ) {
       return false;
     }
@@ -79,15 +87,15 @@ public class CalculatorModel {
   }
 
   // 負号開始、演算子上書き、左から順に apply()
-  public void inputOperator(Operator op) {
+  public void inputOperator(Operator operator) {
 
     switch (state) {
       case READY:
         // マイナスは負号として受け付ける
-        if (op == Operator.SUB) {
+        if (operator == Operator.SUB) {
           // 先頭0置換
           if (currentInput.length() == 1
-              && currentInput.charAt(0) == '0') {
+              && currentInput.charAt(0) == zeroForDisplay) {
             currentInput.deleteCharAt(0);
           }
 
@@ -101,22 +109,22 @@ public class CalculatorModel {
       case INPUT_NUMBER:
         // 指数表記のeに続く符号を受け付ける。eの後に乗除算演算子の入力は受け付けない。
         if(currentInput.length() != 0
-          && currentInput.charAt(currentInput.length() -1) == 'e') {
-          if(op == Operator.ADD) {
-            currentInput.append('+');
-          } else if( op == Operator.SUB) {
-            currentInput.append('-');
+          && currentInput.charAt(currentInput.length() -1) == exponent) {
+          if(operator == Operator.ADD) {
+            currentInput.append(addSign);
+          } else if( operator == Operator.SUB) {
+            currentInput.append(subSign);
           }
           return;
         }
 
         // 指数表記の符号を上書きさせる。
         if(currentInput.length() >= 2
-          && currentInput.charAt(currentInput.length() -2) == 'e') {
-          if(op == Operator.ADD) {
-            currentInput.setCharAt(currentInput.length() -1, '+');
-          } else if( op == Operator.SUB) {
-            currentInput.setCharAt(currentInput.length() -1, '-');
+          && currentInput.charAt(currentInput.length() -2) == exponent) {
+          if(operator == Operator.ADD) {
+            currentInput.setCharAt(currentInput.length() -1, addSign);
+          } else if( operator == Operator.SUB) {
+            currentInput.setCharAt(currentInput.length() -1, subSign);
           }
           return;
         }
@@ -124,20 +132,20 @@ public class CalculatorModel {
         // ディスプレイに負号しかない状態では、演算子を受け付けない
         if (pendingOp == null &&
             (currentInput.length() == 1
-                && currentInput.charAt(0) == '-')) {
+                && currentInput.charAt(0) == subSign)) {
           return;
         }
 
         // 負号の後に演算子が入力された時、負号は削除してから演算子を上書き 数字確定もさせない
         if (currentInput.length() == 1
-            && currentInput.charAt(0) == '-') {
+            && currentInput.charAt(0) == subSign) {
           // 負号 → マイナスは負号のまま
-          if (op == Operator.SUB) {
+          if (operator == Operator.SUB) {
             return;
           }
           currentInput.deleteCharAt(0);
           state = InputState.INPUT_OPERATOR;
-          pendingOp = op;
+          pendingOp = operator;
           return;
         }
 
@@ -152,20 +160,20 @@ public class CalculatorModel {
 
         currentInput.setLength(0);
         state = InputState.INPUT_OPERATOR;
-        pendingOp = op;
+        pendingOp = operator;
         break;
       case INPUT_OPERATOR:
         // MUL・DIVの次のマイナスは負号とする。（currentInputが空の時のみ）
-        if (op == Operator.SUB
+        if (operator == Operator.SUB
             && (pendingOp == Operator.MUL || pendingOp == Operator.DIV)) {
           if (currentInput.length() == 0) {
-            currentInput.append('-');
+            currentInput.append(subSign);
             state = InputState.INPUT_NUMBER;
           }
           return;
         }
 
-        pendingOp = op;
+        pendingOp = operator;
         break;
       case ERROR:
         return;
@@ -175,7 +183,7 @@ public class CalculatorModel {
 
     state = InputState.INPUT_OPERATOR;
     currentInput = new StringBuilder();
-    pendingOp = op;
+    pendingOp = operator;
   }
 
   // 不計算条件（演算子未指定/演算子直後）
@@ -191,11 +199,11 @@ public class CalculatorModel {
     leftOperand = BigDecimal.ZERO;
   }
 
-  // C
+  // C(初期化)
   public void clearAll() {
     state = InputState.READY;
     leftOperand = BigDecimal.ZERO;
-    currentInput = new StringBuilder("0");
+    currentInput = new StringBuilder(zeroForDisplay);
     pendingOp = null;
   }
 
@@ -238,16 +246,16 @@ public class CalculatorModel {
     if (pendingOp != null) {
       switch (pendingOp) {
         case ADD:
-          op = "+";
+          op = String.valueOf(addSign);
           break;
         case SUB:
-          op = "-";
+          op = String.valueOf(subSign);
           break;
         case MUL:
-          op = "×";
+          op = String.valueOf(mulSign);
           break;
         case DIV:
-          op = "÷";
+          op = String.valueOf(divSign);
           break;
         default:
           op = "";
@@ -271,10 +279,10 @@ public class CalculatorModel {
         currentInput.deleteCharAt(currentInput.length() - 1);
         // currentInputが全てなくなった時、左辺がないならREADY、左辺がある(=演算子がある)なら演算子モードにする
         if (currentInput.length() == 0) {
-          if (leftOperand == BigDecimal.ZERO
+          if (leftOperand.compareTo(BigDecimal.ZERO) == 0
             && pendingOp == null
           ) {
-            currentInput = new StringBuilder("0");
+            currentInput = new StringBuilder(String.valueOf(zeroForDisplay));
             state = InputState.READY;
           } else {
             state = InputState.INPUT_OPERATOR;
@@ -297,11 +305,11 @@ public class CalculatorModel {
   // 負号反転 未入力や0は弾く
   public void toggleSign() {
     if (currentInput.length() == 0
-        || currentInput.toString().equals("0")) {
+        || currentInput.toString().equals(String.valueOf(zeroForDisplay))) {
       return;
     }
 
-    if (currentInput.charAt(0) == '-') {
+    if (currentInput.charAt(0) == subSign) {
 
       // 演算子と負号が競合するときは、負号を変えず演算子を上書きする。
       if (pendingOp == Operator.SUB) {
@@ -318,7 +326,7 @@ public class CalculatorModel {
       if(currentInput.length() == 0) {
         state = InputState.INPUT_OPERATOR;
         if(pendingOp == null) {
-          currentInput = new StringBuilder("0");
+          currentInput = new StringBuilder(String.valueOf(zeroForDisplay));
           state = InputState.READY;
         }
       }
@@ -333,11 +341,12 @@ public class CalculatorModel {
         pendingOp = Operator.ADD;
         return;
       }
-      currentInput.insert(0, '-');
+      currentInput.insert(0, subSign);
     }
 
-  }
 
+  }
+  // 単体テスト用
   public InputState getState() {
     return state;
   }

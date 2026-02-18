@@ -41,9 +41,9 @@ public class CalculatorFrame extends JFrame {
       { "±", "0", ".", "=" }
     };
     for (String[] line : lines) {
-      for (String value : line) {
+      for (String key : line) {
         // ボタンの作成
-        JButton button = new JButton(value);
+        JButton button = new JButton(key);
         button.setFocusable(false);
         button.setUI(new BasicButtonUI());
         button.setOpaque(true);
@@ -62,40 +62,40 @@ public class CalculatorFrame extends JFrame {
         buttons.add(button);
 
         // キーバインディング
-        switch (value) {
+        switch (key) {
           case "+":
-            inputMap.put(KeyStroke.getKeyStroke("typed +"), value);
+            inputMap.put(KeyStroke.getKeyStroke("typed +"), key);
             break;
           case "-":
-            inputMap.put(KeyStroke.getKeyStroke("typed -"), value);
+            inputMap.put(KeyStroke.getKeyStroke("typed -"), key);
             break;
           case "×":
-            inputMap.put(KeyStroke.getKeyStroke("typed *"), value);
+            inputMap.put(KeyStroke.getKeyStroke("typed *"), key);
             break;
           case "÷":
-            inputMap.put(KeyStroke.getKeyStroke("typed /"), value);
+            inputMap.put(KeyStroke.getKeyStroke("typed /"), key);
             break;
           case ".":
-            inputMap.put(KeyStroke.getKeyStroke("typed ."), value);
+            inputMap.put(KeyStroke.getKeyStroke("typed ."), key);
             break;
           case "=":
-            inputMap.put(KeyStroke.getKeyStroke("typed ="), value);
-            inputMap.put(KeyStroke.getKeyStroke("ENTER"), value);
+            inputMap.put(KeyStroke.getKeyStroke("typed ="), key);
+            inputMap.put(KeyStroke.getKeyStroke("ENTER"), key);
             break;
           case "C":
-            inputMap.put(KeyStroke.getKeyStroke("typed C"), value);
-            inputMap.put(KeyStroke.getKeyStroke("typed c"), value);
+            inputMap.put(KeyStroke.getKeyStroke("typed C"), key);
+            inputMap.put(KeyStroke.getKeyStroke("typed c"), key);
             break;
           case "←":
-            inputMap.put(KeyStroke.getKeyStroke("BACK_SPACE"), value);
+            inputMap.put(KeyStroke.getKeyStroke("BACK_SPACE"), key);
             break;
           case "1", "2", "3", "4", "5", "6", "7", "8", "9", "0":
-            inputMap.put(KeyStroke.getKeyStroke("typed " + value), value);
+            inputMap.put(KeyStroke.getKeyStroke("typed " + key), key);
             break;
           default:
             break;
         }
-        actionMap.put(value, new AbstractAction() {
+        actionMap.put(key, new AbstractAction() {
           @Override
           public void actionPerformed(ActionEvent e) {
             button.doClick();
@@ -133,9 +133,9 @@ public class CalculatorFrame extends JFrame {
   public void bindController(CalculatorController controller) {
     buttons.forEach(button -> {
       button.addActionListener(e -> {
-        String value = button.getText();
+        String inputedValue = button.getText();
 
-        switch (value) {
+        switch (inputedValue) {
           case "+":
             controller.onOperator(Operator.ADD);
             break;
@@ -167,7 +167,7 @@ public class CalculatorFrame extends JFrame {
             this.switchTheme();
             break;
           case "1", "2", "3", "4", "5", "6","7","8", "9", "0":
-            controller.onDigit(value.charAt(0));
+            controller.onDigit(inputedValue.charAt(0));
             break;
         }
       });
