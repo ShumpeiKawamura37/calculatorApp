@@ -23,7 +23,6 @@ public class CalculatorModel {
   private static final char mulSign = '×';
   private static final char divSign = '÷';
 
-
   public CalculatorModel() {
     leftOperand = BigDecimal.ZERO;
     currentInput = new StringBuilder(String.valueOf(zeroForDisplay));
